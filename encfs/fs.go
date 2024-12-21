@@ -75,12 +75,8 @@ func (encFs *EncFs) MkdirAll(path string, perm os.FileMode) error {
 }
 
 func (encFs *EncFs) Open(name string) (afero.File, error) {
-	if name = encFs.resolve(name); name == "" {
-		return nil, os.ErrNotExist
-	}
-	if err := checkFileExt(name); err != nil {
-		return nil, err
-	}
+	name = encFs.resolve(name)
+
 	f, e := os.Open(name)
 	if f == nil {
 		// while this looks strange, we need to return a bare nil (of type nil) not
@@ -91,9 +87,8 @@ func (encFs *EncFs) Open(name string) (afero.File, error) {
 }
 
 func (encFs *EncFs) OpenFile(name string, flag int, perm os.FileMode) (afero.File, error) {
-	if name = encFs.resolve(name); name == "" {
-		return nil, os.ErrNotExist
-	}
+	name = encFs.resolve(name)
+
 	if err := checkFileExt(name); err != nil {
 		return nil, err
 	}
