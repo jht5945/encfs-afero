@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"io/fs"
 	"math"
 	"os"
 	"strings"
@@ -268,9 +267,6 @@ func (f *EncFile) Readdir(count int) ([]os.FileInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	if count == 0 {
-		return make([]fs.FileInfo, 0), nil
-	}
 
 	filterFileInfos := make([]os.FileInfo, 0)
 	for _, fileInfo := range fileInfos {
@@ -278,7 +274,7 @@ func (f *EncFile) Readdir(count int) ([]os.FileInfo, error) {
 		if !isEncFileMetaFile {
 			filterFileInfos = append(filterFileInfos, fileInfo)
 		}
-		if count >= 0 && len(filterFileInfos) >= count {
+		if count > 0 && len(filterFileInfos) >= count {
 			break
 		}
 	}
