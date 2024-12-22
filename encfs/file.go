@@ -313,7 +313,11 @@ func (f *EncFile) Readdirnames(n int) ([]string, error) {
 }
 
 func (f *EncFile) Stat() (os.FileInfo, error) {
-	return f.file.Stat()
+	fileInfo, err := f.file.Stat()
+	if err != nil {
+		return nil, err
+	}
+	return NewEncFileInfo(f, fileInfo), nil
 }
 
 func (f *EncFile) Sync() error {
