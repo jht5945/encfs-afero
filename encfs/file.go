@@ -96,6 +96,22 @@ func unmarchalEncFileMeta(data []byte) (*EncFileMeta, error) {
 	return &encFileMeta, nil
 }
 
+type EncFileInfo struct {
+	os.FileInfo
+	encFile *EncFile
+}
+
+func (encFileInfo *EncFileInfo) Name() string {
+	return encFileInfo.encFile.encFs.key.DecryptFileName(encFileInfo.FileInfo.Name())
+}
+
+func NewEncFileInfo(encFile *EncFile, fileInfo os.FileInfo) os.FileInfo {
+	return &EncFileInfo{
+		fileInfo,
+		encFile,
+	}
+}
+
 type EncFile struct {
 	isDir       bool
 	closed      bool
@@ -254,7 +270,7 @@ func (f *EncFile) WriteAt(p []byte, off int64) (n int, err error) {
 }
 
 func (f *EncFile) Name() string {
-	return f.file.Name()
+	return f.encFs.key.DecryptFileName(f.file.Name())
 }
 
 func (f *EncFile) Readdir(count int) ([]os.FileInfo, error) {
@@ -272,7 +288,7 @@ func (f *EncFile) Readdir(count int) ([]os.FileInfo, error) {
 	for _, fileInfo := range fileInfos {
 		isEncFileMetaFile := strings.HasSuffix(fileInfo.Name(), EncFileExt)
 		if !isEncFileMetaFile {
-			filterFileInfos = append(filterFileInfos, fileInfo)
+			filterFileInfos = append(filterFileInfos, NewEncFileInfo(f, fileInfo))
 		}
 		if count > 0 && len(filterFileInfos) >= count {
 			break
