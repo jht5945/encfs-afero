@@ -47,3 +47,4 @@ $ cat aa.__encfile | jq .
 }
 ```
 
+File name can be encrypted after set `FileNameIv` in `EncryptionMasterKey`.
