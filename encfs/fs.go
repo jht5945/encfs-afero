@@ -41,6 +41,10 @@ func NewEncryptionMasterKeyWithFileNameIv(key []byte, fileNameIv []byte) *Encryp
 	}
 }
 
+func (k *EncryptionMasterKey) WithFileNameIv(fileNameIv []byte) {
+	k.fileNameIv = fileNameIv
+}
+
 func (k *EncryptionMasterKey) EncryptFileName(name string) string {
 	if k.fileNameIv == nil {
 		// DO NOT ENCRYPT
