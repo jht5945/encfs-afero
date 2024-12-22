@@ -52,9 +52,7 @@ func GetEncryptionMasterKey() (*EncryptionMasterKey, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &EncryptionMasterKey{
-		key: key,
-	}, nil
+	return NewEncryptionMasterKey(key), nil
 }
 
 func DecryptBytes(encryptedValue string) ([]byte, error) {
